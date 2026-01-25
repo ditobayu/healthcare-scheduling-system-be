@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+  moduleFormat    = "cjs"
+}
+
+datasource db {
+  provider = "mysql"
+}
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(STAFF)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  DOCTOR
+  STAFF
+}
+
+model Patient {
+  id           String        @id @default(uuid())
+  name         String
+  nik          String?       @unique // Nomor Induk Kependudukan (Opsional tapi bagus utk validasi)
+  birthDate    DateTime
+  address      String?
+  phone        String?
+  appointments Appointment[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Appointment {
+  id        String            @id @default(uuid())
+  date      DateTime
+  status    AppointmentStatus @default(SCHEDULED)
+  diagnosis String?           @db.Text
+  notes     String?           @db.Text
+  
+  patientId String
+  patient   Patient @relation(fields: [patientId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+model Workflow {
+  id    String         @id @default(uuid())
+  name  String
+  steps WorkflowStep[]
+}
+
+model WorkflowStep {
+  id         String   @id @default(uuid())
+  label      String
+  order      Int     
+  
+  workflowId String
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,160 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input AddStepInput {
+  label: String!
+  workflowId: String!
+}
+
+type Appointment {
+  createdAt: DateTime!
+  date: DateTime!
+  diagnosis: String
+  id: String!
+  notes: String
+  patient: Patient!
+  patientId: String!
+  status: AppointmentStatus!
+  updatedAt: DateTime!
+}
+
+input AppointmentFilterInput {
+  endDate: String
+  patientId: String
+  startDate: String
+}
+
+enum AppointmentStatus {
+  CANCELLED
+  COMPLETED
+  SCHEDULED
+}
+
+type AuthResponse {
+  user: User!
+}
+
+input CreateAppointmentInput {
+  date: String!
+  diagnosis: String
+  notes: String
+  patientId: String!
+}
+
+input CreatePatientInput {
+  address: String
+  birthDate: String!
+  name: String!
+  nik: String
+  phone: String
+}
+
+input CreateWorkflowInput {
+  name: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  addWorkflowStep(addStepInput: AddStepInput!): WorkflowStep!
+  createAppointment(createAppointmentInput: CreateAppointmentInput!): Appointment!
+  createPatient(createPatientInput: CreatePatientInput!): Patient!
+  createWorkflow(createWorkflowInput: CreateWorkflowInput!): Workflow!
+  deleteWorkflowStep(id: String!): Boolean!
+  login(loginInput: LoginInput!): AuthResponse!
+  logout: Boolean!
+  register(registerInput: RegisterInput!): User!
+  removePatient(id: String!): Patient!
+  reorderWorkflowSteps(reorderStepsInput: ReorderStepsInput!): Workflow!
+  updateAppointment(updateAppointmentInput: UpdateAppointmentInput!): Appointment!
+  updatePatient(updatePatientInput: UpdatePatientInput!): Patient!
+}
+
+type Patient {
+  address: String
+  birthDate: DateTime!
+  createdAt: DateTime!
+  id: String!
+  name: String!
+  nik: String
+  phone: String
+  updatedAt: DateTime!
+}
+
+input PatientFilterInput {
+  search: String
+}
+
+type Query {
+  appointment(id: String!): Appointment!
+  appointments(filter: AppointmentFilterInput): [Appointment!]!
+  me: User!
+  patient(id: String!): Patient!
+  patients(filter: PatientFilterInput): [Patient!]!
+  workflow(id: String!): Workflow!
+  workflows: [Workflow!]!
+}
+
+input RegisterInput {
+  email: String!
+  name: String!
+  password: String!
+}
+
+input ReorderStepsInput {
+  stepIds: [String!]!
+  workflowId: String!
+}
+
+enum Role {
+  ADMIN
+  DOCTOR
+  STAFF
+}
+
+input UpdateAppointmentInput {
+  date: String
+  diagnosis: String
+  id: String!
+  notes: String
+  patientId: String
+  status: AppointmentStatus
+}
+
+input UpdatePatientInput {
+  address: String
+  birthDate: String
+  id: String!
+  name: String
+  nik: String
+  phone: String
+}
+
+type User {
+  email: String!
+  id: String!
+  name: String!
+  role: Role!
+}
+
+type Workflow {
+  id: String!
+  name: String!
+  steps: [WorkflowStep]!
+}
+
+type WorkflowStep {
+  id: String!
+  label: String!
+  order: Int!
+  workflowId: String!
+}
