@@ -33,9 +33,10 @@ RUN apk add --no-cache dumb-init
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nestjs -u 1001
 
-# Copy package files and prisma schema
+# Copy package files, prisma schema, and config
 COPY --chown=nestjs:nodejs package*.json ./
 COPY --chown=nestjs:nodejs prisma ./prisma/
+COPY --chown=nestjs:nodejs prisma.config.ts ./
 
 # Install only production dependencies
 RUN npm ci --only=production && npm cache clean --force
@@ -63,4 +64,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 ENTRYPOINT ["dumb-init", "--"]
 
 # Start application
-CMD ["sh", "-c", "npx prisma db push --skip-generate && node dist/src/main"]
+CMD ["sh", "-c", "npx prisma db push --config prisma.config.ts && node dist/src/main"]
