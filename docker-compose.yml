@@ -5,7 +5,7 @@ services:
     container_name: healthcare_mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password_change_me}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-mypassword}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-healthcare_db}
       MYSQL_USER: ${MYSQL_USER:-myuser}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-mypassword}
@@ -17,7 +17,7 @@ services:
     networks:
       - healthcare-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root_password_change_me}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-mypassword}"]
       interval: 10s
       timeout: 5s
       retries: 5

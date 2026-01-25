@@ -1,98 +1,163 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Healthcare Scheduling System Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Deskripsi Proyek
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Healthcare Scheduling System Backend adalah aplikasi backend yang dibangun dengan NestJS untuk mengelola sistem penjadwalan kesehatan. Aplikasi ini menyediakan API GraphQL untuk mengelola pasien, janji temu (appointments), alur kerja (workflows), dan autentikasi pengguna.
 
-## Description
+## Fitur Utama
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Manajemen Pasien**: Tambah, edit, dan hapus data pasien
+- **Penjadwalan Janji Temu**: Buat dan kelola janji temu medis
+- **Alur Kerja**: Sistem workflow untuk proses medis
+- **Autentikasi**: Login dan register dengan JWT
+- **GraphQL API**: Endpoint yang fleksibel untuk frontend
+- **Database**: Menggunakan MySQL dengan Prisma ORM
+- **Caching**: Redis untuk performa yang lebih baik
 
-## Project setup
+## Tech Stack
+
+- **Framework**: NestJS (Node.js)
+- **Database**: MySQL
+- **ORM**: Prisma
+- **Caching**: Redis
+- **API**: GraphQL
+- **Authentication**: JWT
+- **Containerization**: Docker & Docker Compose
+
+## Prerequisites
+
+Sebelum menjalankan proyek ini, pastikan Anda memiliki:
+
+- Node.js (versi 18 atau lebih baru)
+- npm atau yarn
+- Docker dan Docker Compose (untuk menjalankan dengan container)
+- MySQL (jika menjalankan lokal tanpa Docker)
+
+## Instalasi
+
+1. Clone repository ini:
+   ```bash
+   git clone <repository-url>
+   cd healthcare-scheduling-system-be
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Setup environment variables:
+   - Copy `.env.example` ke `.env`
+   - Sesuaikan konfigurasi database, Redis, dan JWT sesuai kebutuhan
+
+4. Setup database:
+   ```bash
+   npx prisma migrate dev
+   npx prisma generate
+   ```
+
+## Menjalankan Proyek Secara Lokal
+
+### Dengan Docker (Direkomendasikan)
+
+1. Pastikan Docker dan Docker Compose terinstall.
+
+2. Jalankan aplikasi dengan Docker Compose:
+   ```bash
+   docker-compose up --build
+   ```
+
+   Aplikasi akan berjalan di `http://localhost:3000`
+
+### Tanpa Docker
+
+1. Pastikan MySQL dan Redis berjalan secara lokal.
+
+2. Jalankan aplikasi:
+   ```bash
+   npm run start:dev
+   ```
+
+   Aplikasi akan berjalan di `http://localhost:3000`
+
+## Menjalankan dengan Docker
+
+Proyek ini sudah dikonfigurasi dengan Docker untuk memudahkan deployment.
+
+### Menggunakan Docker Compose
 
 ```bash
-$ npm install
+# Development
+docker-compose up --build
+
+# Production
+docker-compose -f docker-compose.prod.yml up --build
 ```
 
-## Compile and run the project
+### Menggunakan Dockerfile Saja
 
 ```bash
-# development
-$ npm run start
+# Build image
+docker build -t healthcare-backend .
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# Run container
+docker run -p 3000:3000 healthcare-backend
 ```
 
-## Run tests
+## API Documentation
+
+Aplikasi menggunakan GraphQL. Anda dapat mengakses GraphQL Playground di `http://localhost:3000/graphql` saat aplikasi berjalan.
+
+### Contoh Query
+
+```graphql
+# Login
+mutation {
+  login(loginInput: { email: "user@example.com", password: "password" }) {
+    accessToken
+    user {
+      id
+      email
+    }
+  }
+}
+
+# Get Patients
+query {
+  patients {
+    id
+    name
+    email
+  }
+}
+```
+
+## Testing
+
+Jalankan test dengan:
+```bash
+npm run test
+```
+
+Untuk end-to-end testing:
+```bash
+npm run test:e2e
+```
+
+## Build untuk Production
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run build
 ```
 
-## Deployment
+## Kontribusi
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+1. Fork repository
+2. Buat branch fitur baru (`git checkout -b feature/AmazingFeature`)
+3. Commit perubahan (`git commit -m 'Add some AmazingFeature'`)
+4. Push ke branch (`git push origin feature/AmazingFeature`)
+5. Buat Pull Request
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Lisensi
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Distributed under the MIT License. See `LICENSE` for more information.
