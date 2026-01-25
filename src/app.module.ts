@@ -21,6 +21,7 @@ import { WorkflowsModule } from './modules/workflows/workflows.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       playground: true,
+      introspection: true,
 
       context: ({ req, res }: { req: Request; res: Response }) => ({
         req,

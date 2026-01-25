@@ -60,8 +60,40 @@ export class AuthService {
 
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
+    res.clearCookie('user_id');
 
     return true;
+  }
+
+  async refresh(userId: string, refreshToken: string, res: Response) {
+    const storedToken = await this.redis.get(`refresh_token:${userId}`);
+
+    if (!storedToken || storedToken !== refreshToken) {
+      throw new UnauthorizedException('Refresh token tidak valid');
+    }
+
+    try {
+      this.jwtService.verify(refreshToken, {
+        secret: this.configService.get('JWT_SECRET'),
+      });
+
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('User tidak ditemukan');
+      }
+
+      await this.generateTokens(user.id, user.role, res);
+
+      return { user };
+    } catch {
+      await this.redis.del(`refresh_token:${userId}`);
+      throw new UnauthorizedException(
+        'Refresh token kadaluarsa atau tidak valid',
+      );
+    }
   }
 
   private async generateTokens(userId: string, role: string, res: Response) {
@@ -98,6 +130,13 @@ export class AuthService {
       secure: isProd,
       sameSite: 'lax',
       path: '/auth/refresh',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.cookie('user_id', userId, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
   }

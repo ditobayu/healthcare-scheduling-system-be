@@ -36,4 +36,18 @@ export class AuthResolver {
   async logout(@CurrentUser() user: User, @Context() context: GqlContext) {
     return this.authService.logout(user.id, context.res);
   }
+
+  @Mutation(() => AuthResponse)
+  async refresh(@Context() context: GqlContext) {
+    const refreshToken = context.req.cookies?.['refresh_token'] as
+      | string
+      | undefined;
+    const userId = context.req.cookies?.['user_id'] as string | undefined;
+
+    if (!refreshToken || !userId) {
+      throw new Error('Refresh token tidak ditemukan');
+    }
+
+    return this.authService.refresh(userId, refreshToken, context.res);
+  }
 }
