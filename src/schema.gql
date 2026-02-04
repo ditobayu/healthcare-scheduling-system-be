@@ -72,6 +72,7 @@ type Mutation {
   deleteWorkflowStep(id: String!): Boolean!
   login(loginInput: LoginInput!): AuthResponse!
   logout: Boolean!
+  refresh: AuthResponse!
   register(registerInput: RegisterInput!): User!
   removePatient(id: String!): Patient!
   reorderWorkflowSteps(reorderStepsInput: ReorderStepsInput!): Workflow!

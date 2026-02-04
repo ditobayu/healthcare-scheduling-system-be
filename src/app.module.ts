@@ -28,10 +28,10 @@ import { WorkflowsModule } from './modules/workflows/workflows.module';
         res,
       }),
     }),
+
     PrismaModule,
     RedisModule,
     AuthModule,
-
     PatientsModule,
     AppointmentsModule,
     WorkflowsModule,

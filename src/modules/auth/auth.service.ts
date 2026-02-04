@@ -22,7 +22,7 @@ export class AuthService {
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
   ) {}
 
-  async register(input: RegisterInput) {
+  async register(input: RegisterInput, res: Response) {
     const existing = await this.prisma.user.findUnique({
       where: { email: input.email },
     });
@@ -36,6 +36,8 @@ export class AuthService {
         password: hashedPassword,
       },
     });
+
+    await this.generateTokens(user.id, user.role, res);
 
     return user;
   }
@@ -129,7 +131,6 @@ export class AuthService {
       httpOnly: true,
       secure: isProd,
       sameSite: 'lax',
-      path: '/auth/refresh',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 

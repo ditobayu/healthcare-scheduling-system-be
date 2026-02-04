@@ -19,8 +19,11 @@ export class AuthResolver {
   }
 
   @Mutation(() => User)
-  async register(@Args('registerInput') registerInput: RegisterInput) {
-    return this.authService.register(registerInput);
+  async register(
+    @Args('registerInput') registerInput: RegisterInput,
+    @Context() context: GqlContext,
+  ) {
+    return this.authService.register(registerInput, context.res);
   }
 
   @Mutation(() => AuthResponse)
@@ -44,7 +47,11 @@ export class AuthResolver {
       | undefined;
     const userId = context.req.cookies?.['user_id'] as string | undefined;
 
-    if (!refreshToken || !userId) {
+    if (!userId) {
+      throw new Error('User ID tidak ditemukan');
+    }
+
+    if (!refreshToken) {
       throw new Error('Refresh token tidak ditemukan');
     }
 
